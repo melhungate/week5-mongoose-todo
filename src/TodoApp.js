@@ -14,8 +14,8 @@ class TodoApp extends Component {
 
   refresh = () => {
     axios.get("/todos").then(res => {
-      if (res.data.todos) {
-        this.setState({ todos: res.data.todos });
+      if (res.data.payload) {
+        this.setState({ todos: res.data.payload });
       }
     });
   };
@@ -27,6 +27,12 @@ class TodoApp extends Component {
     axios.post(`/todos/${this.state.todo}`).then(this.refresh);
     this.clearInput();
   };
+
+  completeTodo = id => {
+    axios
+      .patch(`/todos/${id}/complete`)
+      .then(this.refresh);
+  }
 
   removeTodo = index => {
     axios.delete(`/todos/${index}`).then(this.refresh);
@@ -50,7 +56,7 @@ class TodoApp extends Component {
           addTodo={this.addTodo}
           todo={this.state.todo}
         />
-        <ShowTodos todos={this.state.todos} removeTodo={this.removeTodo} />
+        <ShowTodos completeTodo={this.completeTodo} todos={this.state.todos} removeTodo={this.removeTodo} />
       </div>
     );
   }
